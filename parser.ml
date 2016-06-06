@@ -21,7 +21,7 @@ let rec isNumericVal t =
   | TmPred(_,t1) -> isNumericVal t1
   | _ -> false;;
 
-let rec isVal t =
+let isVal t =
   match t with
     TmTrue(_) -> true
   | TmFalse(_) -> true
@@ -32,8 +32,8 @@ exception NoRuleApplies;;
 
 let rec evalstep t =
   match t with
-    TmIf(_, TmTrue(_), t2, t3) -> t2
-  | TmIf(_, TmFalse(_), t2, t3) -> t3
+    TmIf(_, TmTrue(_), t2, _) -> t2
+  | TmIf(_, TmFalse(_), _, t3) -> t3
   | TmIf(fi, t1, t2, t3) -> TmIf(fi, evalstep t1, t2, t3)
   | TmSucc(fi, t1) -> TmSucc(fi, evalstep t1)
   | TmPred(_, TmZero(_)) -> TmZero(dummyinfo)
@@ -57,8 +57,4 @@ let rec string_of_term t =
   | TmZero(_) -> "0"
   | TmSucc(_, t1) -> "TmSucc(" ^ string_of_term t1 ^ ")" (* when isNumericVal nv1 -> String_of_int(1 + ) *)
   | TmPred(_, t1) -> "TmPred(" ^ string_of_term t1 ^ ")"
-  | TmIsZero(_, t1) -> "TmIsZero(" ^ string_of_term t1 ^ ")";;
-  
-let main () =
-  let output = string_of_term (TmTrue(Position(1)))
-  in print_string "5"
+  | TmIsZero(_, t1) -> "TmIsZero(" ^ string_of_term t1 ^ ")";; 
